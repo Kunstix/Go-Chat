@@ -44,7 +44,6 @@ class NameInput extends Component {
 }
 
 const mapeStateToProps = state => {
-  console.log(`State in mapStateToProps ${state}`, state);
   return {
     rooms: state.rooms,
     user: state.user.user,

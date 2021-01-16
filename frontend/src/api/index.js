@@ -1,11 +1,26 @@
-// export const sendMsg = (socket, msg) => {
-//   console.log('Sending msg: ', msg);
-//   socket.send(msg);
-// };
+export const joinRoom = (room, ws) => {
+  ws.send(JSON.stringify({ action: 'join-room', message: room }));
+};
 
-// export const joinRoom = socket => {
-//         socket.send(JSON.stringify({ action: 'join-room', message: this.roomInput }));
-//         this.messages = [];
-//         this.rooms.push({ "name": this.roomInput, "messages": [] });
-//         this.roomInput = "";
-//     },
+export const joinPrivateRoom = (user, ws) => {
+  ws.send(JSON.stringify({ action: 'join-room-private', message: user.id }));
+};
+
+export const leavingRoom = (room, ws) => {
+  ws.send(JSON.stringify({ action: 'leave-room', message: room }));
+};
+
+export const sendMsg = (msg, ws, room) => {
+  if (msg !== '') {
+    ws.send(
+      JSON.stringify({
+        action: 'send-message',
+        message: msg,
+        target: {
+          id: room.id,
+          name: room.name
+        }
+      })
+    );
+  }
+};

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './App.css';
-import Header from './components/Header/Header';
 import NameInput from './components/NameInput/NameInput';
 import RoomOverview from './components/RoomOverview/RoomOverview';
 import { connect } from 'react-redux';

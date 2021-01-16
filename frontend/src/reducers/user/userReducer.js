@@ -7,7 +7,6 @@ const INITIAL_STATE = {
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
-  console.log('USERREDUCER', action);
   switch (action.type) {
     case SET_USERNAME:
       return {

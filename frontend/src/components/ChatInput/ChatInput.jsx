@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { sendMsg } from '../../api';
 
 class ChatInput extends Component {
   constructor(props) {
@@ -14,35 +15,8 @@ class ChatInput extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    this.sendMsg();
-    console.log('Resetting...');
+    sendMsg(this.state.msg, this.props.ws, this.props.room);
     this.setState({ msg: '' });
-  };
-
-  sendMsg = () => {
-    console.log(
-      'Send msg: ',
-      JSON.stringify({
-        action: 'send-message',
-        message: this.state.msg,
-        target: {
-          id: this.props.room.id,
-          name: this.props.room.name
-        }
-      })
-    );
-    if (this.state.msg !== '') {
-      this.props.ws.send(
-        JSON.stringify({
-          action: 'send-message',
-          message: this.state.msg,
-          target: {
-            id: this.props.room.id,
-            name: this.props.room.name
-          }
-        })
-      );
-    }
   };
 
   render() {

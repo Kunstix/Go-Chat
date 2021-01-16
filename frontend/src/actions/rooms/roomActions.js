@@ -5,6 +5,7 @@ import {
   USER_LEFT,
   ROOM_JOINED
 } from '../types';
+import { leavingRoom } from '../../api';
 
 export const receiveMsg = data => {
   let msg = JSON.parse(data);
@@ -34,16 +35,8 @@ export const receiveMsg = data => {
   }
 };
 
-export const joinRoom = (room, ws) => {
-  ws.send(JSON.stringify({ action: 'join-room', message: room }));
-};
-
-export const joinPrivateRoom = (user, ws) => {
-  ws.send(JSON.stringify({ action: 'join-room-private', message: user.id }));
-};
-
 export const leaveRoom = (room, ws) => {
-  ws.send(JSON.stringify({ action: 'leave-room', message: room }));
+  leavingRoom(room, ws);
   return {
     type: LEAVE_ROOM,
     payload: room

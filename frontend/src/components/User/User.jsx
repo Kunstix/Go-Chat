@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { joinPrivateRoom } from '../../actions/rooms/roomActions';
+import { joinPrivateRoom } from '../../api';
 import './User.scss';
 
 class User extends Component {

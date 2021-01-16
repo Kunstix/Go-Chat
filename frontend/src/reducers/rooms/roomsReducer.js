@@ -44,16 +44,8 @@ const roomsReducer = (state = INITIAL_STATE, action) => {
   }
 };
 
-const findRoom = (state, room, msg) => {
-  if (!room) {
-    console.log('ERROr', state, room, msg);
-  }
-  console.log('ROOMS', state.rooms, room.name, room.id);
-  for (let i = 0; i < state.rooms.length; i++) {
-    if (state.rooms[i].id === room.id) {
-      return state.rooms[i];
-    }
-  }
+const findRoom = (state, room) => {
+  return state.rooms.find(currentRoom => currentRoom.id === room.id);
 };
 
 export default roomsReducer;

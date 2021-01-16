@@ -3,7 +3,6 @@ import './Message.scss';
 
 class Message extends Component {
   render() {
-    console.log('MSG', this.props.message);
     return (
       <div
         className={`Message rounded-pill p-1 px-2 mx-2 my-1 text-white text-monospace text-light small ${

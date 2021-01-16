@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { joinRoom } from '../../actions/rooms/roomActions';
+import { joinRoom } from '../../api';
 
 class RoomInput extends Component {
   constructor(props) {
@@ -40,7 +40,6 @@ class RoomInput extends Component {
 }
 
 const mapeStateToProps = state => {
-  console.log(`State in mapStateToProps ${state}`, state);
   return {
     ws: state.ws.ws
   };

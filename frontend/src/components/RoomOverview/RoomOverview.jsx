@@ -14,7 +14,6 @@ class RoomOverview extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.ws !== this.props.ws) {
       this.props.ws.onmessage = msg => {
-        console.log(`Receiving msg: ${msg.data}`);
         msg.data.split(/\r?\n/).forEach(data => this.props.receiveMsg(data));
       };
     }
@@ -44,7 +43,6 @@ class RoomOverview extends Component {
 }
 
 const mapeStateToProps = state => {
-  console.log('STATE', state);
   return {
     ws: state.ws.ws,
     rooms: state.rooms.rooms,

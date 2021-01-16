@@ -5,7 +5,6 @@ const INITIAL_STATE = {
 };
 
 const wsReducer = (state = INITIAL_STATE, action) => {
-  console.log('reducing ws', action.type);
   switch (action.type) {
     case CONNECT:
       return {

@@ -14,13 +14,6 @@ type Message struct {
 }
 
 func (message *Message) encode() []byte {
-	test, err := json.Marshal(message.Sender)
-	if err != nil {
-		log.Println("Marshalling failed test: ")
-		log.Println(err)
-	}
-	log.Println(test)
-
 	json, err := json.Marshal(message)
 	if err != nil {
 		log.Println("Marshalling failed : ")
