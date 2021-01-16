@@ -2,14 +2,15 @@ package websocket
 
 import (
 	"encoding/json"
+	"github.com/kunstix/gochat/models"
 	"log"
 )
 
 type Message struct {
-	Action  string  `json:"action"`
-	Message string  `json:"message"`
-	Target  *Room   `json:"target"`
-	Sender  *Client `json:"sender"`
+	Action  string      `json:"action"`
+	Message string      `json:"message"`
+	Target  *Room       `json:"target"`
+	Sender  models.User `json:"sender"`
 }
 
 func (message *Message) encode() []byte {

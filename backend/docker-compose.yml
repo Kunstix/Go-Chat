@@ -1,0 +1,8 @@
+version: '3.5'
+
+services:
+  redis:
+    container_name: redis_cont
+    image: 'redis:alpine'
+    ports:
+      - '6364:6379'

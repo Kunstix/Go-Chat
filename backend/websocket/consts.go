@@ -34,3 +34,5 @@ var (
 	Newline = []byte{'\n'}
 	Space   = []byte{' '}
 )
+
+const GeneralChannel = "general"

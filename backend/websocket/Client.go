@@ -2,6 +2,8 @@ package websocket
 
 import (
 	"encoding/json"
+	"github.com/kunstix/gochat/config"
+	"github.com/kunstix/gochat/models"
 	"log"
 	"net/http"
 	"time"
@@ -155,15 +157,18 @@ func (c *Client) handleJoinRoomMessage(msg Message) {
 }
 
 func (c *Client) handleJoinRoomPrivateMessage(msg Message) {
-	target := c.Pool.findClientByID(msg.Message)
+	target := c.Pool.findUserByID(msg.Message)
 	if target == nil {
 		return
 	}
 
 	roomName := msg.Message + c.ID.String()
 
-	c.joinRoom(roomName, target)
-	target.joinRoom(roomName, c)
+	privateRoom := c.joinRoom(roomName, target)
+
+	if privateRoom != nil {
+		c.inviteTarget(target, privateRoom)
+	}
 }
 
 func (c *Client) handleLeaveRoomMessage(message Message) {
@@ -175,7 +180,7 @@ func (c *Client) handleLeaveRoomMessage(message Message) {
 	room.unregister <- c
 }
 
-func (c *Client) joinRoom(roomName string, sender *Client) {
+func (c *Client) joinRoom(roomName string, sender models.User) *Room {
 
 	room := c.Pool.findRoomByName(roomName)
 	if room == nil {
@@ -184,13 +189,28 @@ func (c *Client) joinRoom(roomName string, sender *Client) {
 
 	// Don't allow to join private rooms through public room message
 	if sender == nil && room.Private {
-		return
+		return nil
 	}
 
 	if !c.isInRoom(room) {
 		c.Rooms[room] = true
 		room.register <- c
 		c.notifyRoomJoined(room, sender)
+	}
+
+	return room
+}
+
+func (c *Client) inviteTarget(target models.User, room *Room) {
+	inviteMsg := &Message{
+		Action:  JoinRoomPrivateAction,
+		Message: target.GetId(),
+		Target:  room,
+		Sender:  c,
+	}
+
+	if err := config.Redis.Publish(ctx, GeneralChannel, inviteMsg.encode()).Err(); err != nil {
+		log.Println(err)
 	}
 }
 
@@ -201,7 +221,7 @@ func (c *Client) isInRoom(room *Room) bool {
 	return false
 }
 
-func (c *Client) notifyRoomJoined(room *Room, sender *Client) {
+func (c *Client) notifyRoomJoined(room *Room, sender models.User) {
 	message := Message{
 		Action: RoomJoinedAction,
 		Target: room,
@@ -226,4 +246,12 @@ func logIt(message []byte) {
 		log.Printf("Error on unmarshal JSON message %s\n", err)
 	}
 	log.Printf("Message with %s %s\n", msg.Action, msg.Message)
+}
+
+func (c *Client) GetId() string {
+	return c.ID.String()
+}
+
+func (c *Client) GetName() string {
+	return c.Name
 }

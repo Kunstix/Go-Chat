@@ -1,10 +1,14 @@
 package websocket
 
 import (
+	"context"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/kunstix/gochat/config"
 	"log"
 )
+
+var ctx = context.Background()
 
 type Room struct {
 	ID         uuid.UUID `json:"id"`
@@ -29,6 +33,8 @@ func NewRoom(name string, private bool) *Room {
 }
 
 func (room *Room) Run() {
+	go room.subscribeToRoomMessages()
+
 	for {
 		select {
 		case c := <-room.register:
@@ -38,8 +44,23 @@ func (room *Room) Run() {
 			room.unregisterClientInRoom(c)
 			log.Printf("Room is unregistered %s...", room.Name)
 		case msg := <-room.broadcast:
-			room.broadcastToClientsInRoom(msg.encode())
+			room.publishRoomMessage(msg.encode())
 		}
+	}
+}
+
+func (room *Room) publishRoomMessage(msg []byte) {
+	err := config.Redis.Publish(ctx, room.GetName(), msg).Err()
+
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func (room *Room) subscribeToRoomMessages() {
+	pubsub := config.Redis.Subscribe(ctx, room.GetName())
+	for msg := range pubsub.Channel() {
+		room.broadcastToClientsInRoom([]byte(msg.Payload))
 	}
 }
 
@@ -50,7 +71,7 @@ func (room *Room) notifyClientJoined(c *Client) {
 		Message: fmt.Sprintf(welcomeMessage, c.Name),
 	}
 
-	room.broadcastToClientsInRoom(message.encode())
+	room.publishRoomMessage(message.encode())
 }
 
 func (room *Room) notifyClientLeft(client *Client) {
@@ -59,7 +80,7 @@ func (room *Room) notifyClientLeft(client *Client) {
 		Target:  room,
 		Message: fmt.Sprintf(goodbyeMessage, client.Name),
 	}
-	room.broadcastToClientsInRoom(message.encode())
+	room.publishRoomMessage(message.encode())
 }
 
 func (room *Room) registerClientInRoom(c *Client) {
@@ -78,4 +99,16 @@ func (room *Room) broadcastToClientsInRoom(message []byte) {
 	for client := range room.clients {
 		client.Send <- message
 	}
+}
+
+func (room *Room) GetId() string {
+	return room.ID.String()
+}
+
+func (room *Room) GetName() string {
+	return room.Name
+}
+
+func (room *Room) GetPrivate() bool {
+	return room.Private
 }
