@@ -1,8 +1,11 @@
-import { SET_USERNAME } from '../../actions/types';
+import { LOGIN, SET_USERNAME } from '../../actions/types';
 
 const INITIAL_STATE = {
   user: {
-    name: ''
+    name: '',
+    username: '',
+    password: '',
+    token: ''
   }
 };
 
@@ -12,6 +15,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         user: { name: action.payload }
+      };
+    case LOGIN:
+      return {
+        ...state,
+        user: action.payload
       };
     default:
       return state;

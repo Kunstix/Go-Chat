@@ -1,44 +1,83 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { connectWs } from '../../actions/ws/wsActions';
-import { setUsername } from '../../actions/user/userActions';
+import { setUsername, login } from '../../actions/user/userActions';
 
 class NameInput extends Component {
   constructor(props) {
     super(props);
-    this.state = { username: '' };
+    this.state = { name: '', username: '', password: '' };
   }
 
-  handleChange = event => {
-    this.setState({ username: event.target.value });
+  handleChange = (target, event) => {
+    this.setState({ [target]: event.target.value });
   };
 
-  handleSubmit = event => {
+  handleAnonSubmit = event => {
     event.preventDefault();
-    this.props.setUsername(this.state.username);
+    this.props.setUsername(this.state.name);
+  };
+
+  handleLogin = event => {
+    event.preventDefault();
+    console.log('LOGIN', this.state);
+    this.props.login({
+      username: this.state.username,
+      password: this.state.password
+    });
   };
 
   render() {
     return (
-      <form
-        className='form-group mt-4 d-flex justify-content-center align-items-center'
-        onSubmit={this.handleSubmit}
-      >
-        <label className='w-50'>
+      <div className='d-flex flex-column align-items-center text-white'>
+        <form
+          className='form-group border p-4 mt-4 d-flex flex-column justify-content-center align-items-center'
+          onSubmit={this.handleAnonSubmit}
+        >
+          <label>
+            Anonymous login:
+            <input
+              type='text'
+              value={this.state.name}
+              onChange={event => this.handleChange('name', event)}
+              className='form-control'
+              placeholder='Join the app by adding your name'
+            />
+          </label>
           <input
-            type='text'
-            value={this.state.username}
-            onChange={this.handleChange}
-            className='form-control'
-            placeholder='Join the app by adding your name'
+            type='submit'
+            className='btn btn-primary btn-sm ml-2'
+            value='Submit'
           />
-        </label>
-        <input
-          type='submit'
-          className='btn btn-primary btn-sm ml-2'
-          value='Submit'
-        />
-      </form>
+        </form>
+        <form
+          className='form-group border p-4 d-flex flex-column justify-content-center align-items-center'
+          onSubmit={this.handleLogin}
+        >
+          <label>
+            User login:
+            <input
+              type='text'
+              value={this.state.username}
+              onChange={event => this.handleChange('username', event)}
+              className='form-control'
+              placeholder='Join the app by adding your name'
+            />
+            <input
+              type='password'
+              value={this.state.password}
+              onChange={event => this.handleChange('password', event)}
+              className='form-control'
+              placeholder='Join the app by adding your name'
+            />
+          </label>
+          <input
+            type='submit'
+            className='btn btn-primary btn-sm ml-2'
+            value='Submit'
+          />
+        </form>
+      </div>
     );
   }
 }
@@ -51,4 +90,6 @@ const mapeStateToProps = state => {
   };
 };
 
-export default connect(mapeStateToProps, { connectWs, setUsername })(NameInput);
+export default connect(mapeStateToProps, { connectWs, setUsername, login })(
+  NameInput
+);

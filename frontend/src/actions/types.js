@@ -8,3 +8,5 @@ export const SET_USERNAME = 'SET_USERNAME';
 export const USER_JOINED = 'USER_JOINED';
 export const USER_LEFT = 'USER_LEFT';
 export const ROOM_JOINED = 'ROOM_JOINED';
+export const LOGIN = 'LOGIN';
+export const ERROR = 'ERROR';

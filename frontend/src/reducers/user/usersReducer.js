@@ -7,10 +7,17 @@ const INITIAL_STATE = {
 const usersReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case USER_JOINED:
-      return {
-        ...state,
-        users: [...state.users, action.payload]
-      };
+      if (state.users.some(user => user.id === action.payload.id)) {
+        return {
+          ...state
+        };
+      } else {
+        return {
+          ...state,
+          users: [...state.users, action.payload]
+        };
+      }
+
     case USER_LEFT:
       return {
         ...state,

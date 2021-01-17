@@ -10,7 +10,11 @@ class Sidebar extends Component {
       <div className='vh-80 text-white' id='sidebar-wrapper'>
         <div className='sidebar-heading'>
           <p className='text-center m-0'>
-            {this.props.username ? `Hello ${this.props.username}!` : 'Hello!'}
+            {this.props.user.name
+              ? `Hello ${this.props.user.name}!`
+              : this.props.user.username
+              ? `Hello ${this.props.user.username}!`
+              : 'Hello!'}
           </p>
         </div>
         <div className='list-group list-group-flush overflow-auto h-100'>
@@ -27,7 +31,7 @@ const mapeStateToProps = state => {
   console.log('STATE SIDEBAR', state);
   return {
     ws: state.ws.ws,
-    username: state.user.user.name,
+    user: state.user.user,
     users: state.users.users
   };
 };

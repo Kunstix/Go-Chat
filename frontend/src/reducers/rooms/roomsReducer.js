@@ -15,12 +15,13 @@ const roomsReducer = (state = INITIAL_STATE, action) => {
     case JOIN_ROOM:
       return {
         ...state,
-        rooms: [...state.rooms, { name: action.payload, messages: [] }]
+        rooms: [...state.rooms, { ...action.payload, messages: [] }]
       };
     case LEAVE_ROOM:
+      console.log('LEAVE', state.rooms, action.payload);
       return {
         ...state,
-        rooms: state.rooms.filter(room => room.name !== action.payload)
+        rooms: state.rooms.filter(room => room.id !== action.payload)
       };
     case RECEIVE_MSG:
       const foundRoom = findRoom(state, msg.target, msg);

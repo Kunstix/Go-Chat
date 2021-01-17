@@ -1,7 +1,12 @@
 import { CONNECT } from '../types';
 
 export const connectWs = user => {
-  const socket = new WebSocket('ws://localhost:8080/ws?name=' + user.name);
+  var socket;
+  if (user.token) {
+    socket = new WebSocket('ws://localhost:8080/ws?bearer=' + user.token);
+  } else {
+    socket = new WebSocket('ws://localhost:8080/ws?name=' + user.name);
+  }
 
   socket.onopen = () => {
     console.log('Successfully Connected');

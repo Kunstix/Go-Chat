@@ -35,10 +35,10 @@ export const receiveMsg = data => {
   }
 };
 
-export const leaveRoom = (room, ws) => {
-  leavingRoom(room, ws);
+export const leaveRoom = (roomId, ws) => {
+  leavingRoom(roomId, ws);
   return {
     type: LEAVE_ROOM,
-    payload: room
+    payload: roomId
   };
 };

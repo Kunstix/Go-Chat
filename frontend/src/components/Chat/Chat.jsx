@@ -6,7 +6,7 @@ import './Chat.scss';
 
 class Chat extends Component {
   leaveChat = () => {
-    this.props.leaveRoom(this.props.room.name, this.props.ws);
+    this.props.leaveRoom(this.props.room.id, this.props.ws);
   };
 
   render() {

@@ -17,7 +17,11 @@ class App extends Component {
             </button> */}
           </nav>
           <div className='container'>
-            {this.props.username ? <RoomOverview /> : <NameInput />}
+            {this.props.username || this.props.token ? (
+              <RoomOverview />
+            ) : (
+              <NameInput />
+            )}
           </div>
         </div>
       </div>
@@ -27,7 +31,8 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    username: state.user.user.name
+    username: state.user.user.name,
+    token: state.user.user.token
   };
 };
 
