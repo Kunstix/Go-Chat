@@ -1,0 +1,7 @@
+{
+     "PORT": 8080,
+     "SECRET": "super secret",
+     "DB_USER": "kunstix",
+     "DB_PASSWORD": "pass1234",
+     "REDIS_HOST": "redis://localhost:6364/0"
+}

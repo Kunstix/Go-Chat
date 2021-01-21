@@ -9,4 +9,5 @@ export const USER_JOINED = 'USER_JOINED';
 export const USER_LEFT = 'USER_LEFT';
 export const ROOM_JOINED = 'ROOM_JOINED';
 export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
 export const ERROR = 'ERROR';

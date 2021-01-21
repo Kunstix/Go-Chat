@@ -9,7 +9,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func InitDB() *sql.DB {
+func InitDB(conf Configuration) *sql.DB {
 	db, err := sql.Open("sqlite3", "./chatdb.db")
 	if err != nil {
 		log.Fatal(err)
@@ -31,7 +31,6 @@ func InitDB() *sql.DB {
     CREATE TABLE IF NOT EXISTS user (
         id VARCHAR(255) NOT NULL PRIMARY KEY,
         name VARCHAR(255) NOT NULL UNIQUE,
-        username VARCHAR(255) NULL UNIQUE,
         password VARCHARR(255) NULL
     );
     `
@@ -42,8 +41,8 @@ func InitDB() *sql.DB {
 
 	password, _ := auth.GeneratePassword("pass1234")
 
-	sqlStmt = `INSERT into user (id, name, username, password) VALUES
-                    ('` + uuid.New().String() + `', 'kunstix', 'kunstix','` + password + `')`
+	sqlStmt = `INSERT OR REPLACE into user (id, name, password) VALUES
+					('` + uuid.New().String() + `','kunstix','` + password + `')`
 
 	_, err = db.Exec(sqlStmt)
 	if err != nil {

@@ -1,4 +1,4 @@
-import { USER_JOINED, USER_LEFT } from '../../actions/types';
+import { LOGOUT, USER_JOINED, USER_LEFT } from '../../actions/types';
 
 const INITIAL_STATE = {
   users: []
@@ -17,12 +17,13 @@ const usersReducer = (state = INITIAL_STATE, action) => {
           users: [...state.users, action.payload]
         };
       }
-
     case USER_LEFT:
       return {
         ...state,
         users: state.users.filter(user => user.id !== action.payload.id)
       };
+    case LOGOUT:
+      return INITIAL_STATE;
     default:
       return state;
   }

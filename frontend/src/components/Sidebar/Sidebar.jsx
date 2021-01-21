@@ -31,7 +31,7 @@ const mapeStateToProps = state => {
   console.log('STATE SIDEBAR', state);
   return {
     ws: state.ws.ws,
-    user: state.user.user,
+    user: state.auth.currentUser,
     users: state.users.users
   };
 };

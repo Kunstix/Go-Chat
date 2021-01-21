@@ -3,7 +3,8 @@ import {
   RECEIVE_MSG,
   USER_JOINED,
   USER_LEFT,
-  ROOM_JOINED
+  ROOM_JOINED,
+  ERROR
 } from '../types';
 import { leavingRoom } from '../../api';
 
@@ -31,6 +32,10 @@ export const receiveMsg = data => {
         payload: msg
       };
     default:
+      return {
+        type: ERROR,
+        payload: msg.msg
+      };
       break;
   }
 };

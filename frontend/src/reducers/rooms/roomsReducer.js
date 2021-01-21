@@ -1,6 +1,7 @@
 import {
   JOIN_ROOM,
   LEAVE_ROOM,
+  LOGOUT,
   RECEIVE_MSG,
   ROOM_JOINED
 } from '../../actions/types';
@@ -40,6 +41,8 @@ const roomsReducer = (state = INITIAL_STATE, action) => {
         ...state,
         rooms: [...state.rooms, room]
       };
+    case LOGOUT:
+      return INITIAL_STATE;
     default:
       return state;
   }

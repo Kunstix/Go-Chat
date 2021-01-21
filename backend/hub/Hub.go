@@ -52,7 +52,7 @@ func (hub *Hub) Start() {
 }
 
 func (hub *Hub) listenGeneralChannel() {
-	ch := config.Redis.Subscribe(ctx, GeneralChannel).Channel()
+	ch := config.Redis.Subscribe(config.Ctx, config.GeneralChannel).Channel()
 	for msg := range ch {
 		var message Message
 		if err := json.Unmarshal([]byte(msg.Payload), &message); err != nil {
@@ -66,6 +66,8 @@ func (hub *Hub) listenGeneralChannel() {
 			hub.handleUserLeft(message)
 		case JoinRoomPrivateAction:
 			hub.handleUserJoinPrivate(message)
+		case UserRegisteredAction:
+			hub.Users = hub.userRepository.GetAllUsers()
 		}
 	}
 }
@@ -98,7 +100,7 @@ func (hub *Hub) publishClientJoined(c *Client) {
 		Action: UserJoinedAction,
 		Sender: c,
 	}
-	if err := config.Redis.Publish(ctx, GeneralChannel, msg.encode()).Err(); err != nil {
+	if err := config.Redis.Publish(config.Ctx, config.GeneralChannel, msg.encode()).Err(); err != nil {
 		log.Println(err)
 	}
 }
@@ -108,14 +110,17 @@ func (hub *Hub) publishClientLeft(c *Client) {
 		Action: UserLeftAction,
 		Sender: c,
 	}
-	if err := config.Redis.Publish(ctx, GeneralChannel, msg.encode()).Err(); err != nil {
+	if err := config.Redis.Publish(config.Ctx, config.GeneralChannel, msg.encode()).Err(); err != nil {
 		log.Println(err)
 	}
 }
 
 func (hub *Hub) registerClient(c *Client) {
+	log.Println(c.GetId())
 	if user := hub.findUserByID(c.GetId()); user == nil {
-		hub.userRepository.AddUser(c)
+		if err := hub.userRepository.AddUser(c); err != nil {
+			log.Println(err)
+		}
 	}
 
 	hub.publishClientJoined(c)
@@ -229,4 +234,14 @@ func (hub *Hub) listOnlineUsers(c *Client) {
 			c.Send <- message.encode()
 		}
 	}
+}
+
+func (hub *Hub) UserAlreadyExists(name string) bool {
+	for _, u := range hub.userRepository.GetAllRegisteredUsers() {
+		log.Println("Test user for existence: " + u.GetName())
+		if u.GetName() == name {
+			return true
+		}
+	}
+	return false
 }

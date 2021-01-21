@@ -26,6 +26,7 @@ const (
 	UserLeftAction        = "user-left"
 	JoinRoomPrivateAction = "join-room-private" // create private room
 	RoomJoinedAction      = "room-joined"       // answer to create room
+	UserRegisteredAction  = "user-registered"   // answer to create room
 )
 const welcomeMessage = "%s joined the room"
 const goodbyeMessage = "%s left the room"
@@ -34,8 +35,6 @@ var (
 	Newline = []byte{'\n'}
 	Space   = []byte{' '}
 )
-
-const GeneralChannel = "general"
 
 const HmacSecret = "Original Secret which should be stored in env"
 const DefaulExpireTime = 86400 // 1 day

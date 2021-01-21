@@ -1,4 +1,4 @@
-import { ERROR } from '../../actions/types';
+import { ERROR, LOGOUT } from '../../actions/types';
 
 const INITIAL_STATE = {
   error: ''
@@ -11,6 +11,8 @@ const errorReducer = (state = INITIAL_STATE, action) => {
         ...state,
         error: { error: action.payload }
       };
+    case LOGOUT:
+      return INITIAL_STATE;
     default:
       return state;
   }

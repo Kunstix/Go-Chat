@@ -2,8 +2,10 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"fmt"
 	"github.com/kunstix/gochat/repository"
+	"github.com/tkanos/gonfig"
 	"net/http"
 
 	"github.com/kunstix/gochat/api"
@@ -23,6 +25,7 @@ func setupRoutes(db *sql.DB) *mux.Router {
 	r := mux.NewRouter()
 	r.Use(CORS)
 	r.HandleFunc("/api/login", api.HandleLogin)
+	r.HandleFunc("/api/register", api.HandleRegister)
 	r.HandleFunc("/ws", auth.Secure(func(w http.ResponseWriter, r *http.Request) {
 		hub.ServeWs(chatHub, w, r)
 	}))
@@ -48,11 +51,27 @@ func CORS(next http.Handler) http.Handler {
 }
 
 func main() {
+	var mode = flag.String("m", "dev", "choose dev or prod mode")
+	flag.Parse()
+
+	conf := config.Configuration{}
+	if *mode == "prod" {
+		err := gonfig.GetConf("config/production.json", &conf)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		err := gonfig.GetConf("config/development.json", &conf)
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	fmt.Println("Gopher Chat App")
-	db := config.InitDB()
-	config.CreateRedisClient()
+	db := config.InitDB(conf)
+	config.CreateRedisClient(conf)
 	defer db.Close()
 	r := setupRoutes(db)
 
-	http.ListenAndServe(":8080", (r))
+	http.ListenAndServe(":"+conf.PORT, (r))
 }

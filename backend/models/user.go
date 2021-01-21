@@ -6,8 +6,9 @@ type User interface {
 }
 
 type UserRepository interface {
-	AddUser(user User)
+	AddUser(user User) error
 	RemoveUser(user User)
 	FindUserById(ID string) User
 	GetAllUsers() []User
+	GetAllRegisteredUsers() []User
 }

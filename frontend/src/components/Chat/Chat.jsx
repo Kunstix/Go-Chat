@@ -41,7 +41,7 @@ class Chat extends Component {
 
 const mapStateToProps = state => {
   return {
-    username: state.user.user.name,
+    username: state.auth.currentUser.name,
     rooms: state.rooms.rooms,
     ws: state.ws.ws
   };

@@ -20,7 +20,7 @@ class RoomOverview extends Component {
   }
 
   render() {
-    return (
+    return this.props.ws ? (
       <div>
         <RoomInput />
         <div className='d-flex flex-wrap justify-content-around align-items-around'>
@@ -38,6 +38,8 @@ class RoomOverview extends Component {
           })}
         </div>
       </div>
+    ) : (
+      <div>Loading...</div>
     );
   }
 }
@@ -46,7 +48,7 @@ const mapeStateToProps = state => {
   return {
     ws: state.ws.ws,
     rooms: state.rooms.rooms,
-    user: state.user.user
+    user: state.auth.currentUser
   };
 };
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { connectWs } from '../../actions/ws/wsActions';
-import { setUsername, login } from '../../actions/user/userActions';
+import { setUsername, login, register } from '../../actions/user/userActions';
 
 class NameInput extends Component {
   constructor(props) {
@@ -20,8 +20,17 @@ class NameInput extends Component {
 
   handleLogin = event => {
     event.preventDefault();
-    console.log('LOGIN', this.state);
+    console.log('LOGIN', event);
     this.props.login({
+      username: this.state.username,
+      password: this.state.password
+    });
+  };
+
+  handleRegister = event => {
+    event.preventDefault();
+    console.log('Register', event);
+    this.props.register({
       username: this.state.username,
       password: this.state.password
     });
@@ -47,7 +56,7 @@ class NameInput extends Component {
           <input
             type='submit'
             className='btn btn-primary btn-sm ml-2'
-            value='Submit'
+            value='Join'
           />
         </form>
         <form
@@ -74,7 +83,13 @@ class NameInput extends Component {
           <input
             type='submit'
             className='btn btn-primary btn-sm ml-2'
-            value='Submit'
+            value='Login'
+          />
+          <input
+            type='submit'
+            className='btn btn-primary btn-sm ml-2'
+            value='Register'
+            onClick={event => this.handleRegister(event)}
           />
         </form>
       </div>
@@ -85,11 +100,14 @@ class NameInput extends Component {
 const mapeStateToProps = state => {
   return {
     rooms: state.rooms,
-    user: state.user.user,
+    user: state.auth.currentUser,
     ws: state.ws
   };
 };
 
-export default connect(mapeStateToProps, { connectWs, setUsername, login })(
-  NameInput
-);
+export default connect(mapeStateToProps, {
+  connectWs,
+  setUsername,
+  login,
+  register
+})(NameInput);

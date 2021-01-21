@@ -1,7 +1,7 @@
-import { LOGIN, SET_USERNAME } from '../../actions/types';
+import { LOGIN, LOGOUT, SET_USERNAME } from '../../actions/types';
 
 const INITIAL_STATE = {
-  user: {
+  currentUser: {
     name: '',
     username: '',
     password: '',
@@ -10,17 +10,34 @@ const INITIAL_STATE = {
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
+  console.log('Login', action);
   switch (action.type) {
     case SET_USERNAME:
       return {
         ...state,
-        user: { name: action.payload }
+        currentUser: { name: action.payload }
       };
     case LOGIN:
       return {
         ...state,
-        user: action.payload
+        currentUser: action.payload
       };
+    case LOGOUT:
+      return {
+        ...state,
+        currentUser: {
+          name: '',
+          username: '',
+          password: '',
+          token: ''
+        }
+      };
+    /*     case REHYDRATE:
+      console.log('REHYDRATE', action);
+      return {
+        ...state,
+        user: action.payload.user
+      }; */
     default:
       return state;
   }

@@ -50,6 +50,12 @@ func ServeWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	}
 	user := ctxUser.(models.User)
 
+	if hub.UserAlreadyExists(user.GetName()) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte("{\"status\": \"error\",\"msg\": \"User already exists\"}"))
+		return
+	}
+
 	// establish websocket
 	conn, err := websocks.Upgrade(w, r)
 	if err != nil {
@@ -74,7 +80,11 @@ func (c *Client) Read() {
 
 	c.Conn.SetReadLimit(MaxMessageSize)
 	c.Conn.SetReadDeadline(time.Now().Add(PongWait))
-	c.Conn.SetPongHandler(func(string) error { c.Conn.SetReadDeadline(time.Now().Add(PongWait)); return nil })
+	c.Conn.SetPongHandler(func(string) error {
+		log.Printf("Pong received client %s\n", c.Name)
+		c.Conn.SetReadDeadline(time.Now().Add(PongWait))
+		return nil
+	})
 
 	for {
 		_, byteMsg, err := c.Conn.ReadMessage()
@@ -221,7 +231,7 @@ func (c *Client) inviteTarget(target models.User, room *Room) {
 		Sender:  c,
 	}
 
-	if err := config.Redis.Publish(ctx, GeneralChannel, inviteMsg.encode()).Err(); err != nil {
+	if err := config.Redis.Publish(config.Ctx, config.GeneralChannel, inviteMsg.encode()).Err(); err != nil {
 		log.Println(err)
 	}
 }
